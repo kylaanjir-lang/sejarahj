@@ -1,0 +1,612 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arsip Merdeka — Jejak Kemerdekaan</title>
+<style>
+:root {
+  --paper: #f8f0e1;
+  --background: #e9dcc6;
+  --card: #eee3cf;
+  --brown: #493324;
+  --muted: #795c44;
+  --line: #d0b898;
+  --accent: #80563c;
+  --shadow: 0 8px 24px #49332412;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--brown);
+  font-family: Georgia, "Times New Roman", serif;
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid #b68a60;
+  outline-offset: 3px;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #f8f0e1f2;
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+.header-inner {
+  max-width: 900px;
+  margin: auto;
+  padding: 13px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand { font-weight: bold; letter-spacing: 1px; }
+.brand small {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+.stamp {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 6px 9px;
+  font-size: 10px;
+  transform: rotate(-3deg);
+}
+main {
+  width: min(100% - 28px, 760px);
+  margin: 24px auto 100px;
+}
+.page { display: none; animation: appear .25s ease; }
+.page.active { display: block; }
+@keyframes appear {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.paper {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.cover {
+  padding: 12px;
+  background: #e4d0ae;
+}
+.cover-inner {
+  padding: 28px 20px;
+  border: 1px solid #c6ac87;
+  text-align: center;
+}
+.eyebrow {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+h1 { font-size: clamp(30px, 8vw, 52px); line-height: 1.05; }
+h2 { font-size: clamp(23px, 6vw, 32px); }
+h3 { font-size: 19px; }
+p { line-height: 1.7; }
+.muted { color: var(--muted); }
+.rule { border: 0; border-top: 1px solid var(--line); margin: 20px 0; }
+input, select {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px;
+  background: #fffaf0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--brown);
+}
+label { display: block; margin: 14px 0 6px; font-size: 13px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent);
+  color: white;
+  padding: 12px 16px;
+  min-height: 44px;
+  text-decoration: none;
+}
+.btn.secondary { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.full { width: 100%; margin-top: 12px; }
+.grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.games-grid { grid-template-columns: 1fr; }
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 16px;
+  border-radius: 5px;
+  text-align: left;
+  color: var(--brown);
+  min-width: 0;
+}
+.card:hover { border-color: var(--accent); }
+.card .number { color: var(--muted); font-size: 11px; letter-spacing: 1px; }
+.card h3 { margin: 9px 0; }
+.icon { font-size: 25px; margin-bottom: 8px; }
+.case-card { position: relative; }
+.case-card.used {
+  opacity: .5;
+  background: #e6dccb;
+  cursor: not-allowed;
+}
+.status { font-size: 11px; color: var(--muted); }
+.notice {
+  padding: 13px;
+  background: #e9dcc6;
+  border-left: 3px solid var(--accent);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.step {
+  display: flex;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.step:last-child { border-bottom: 0; }
+.step-num {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--background);
+}
+.choice {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  margin: 9px 0;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: #fffaf0;
+  color: var(--brown);
+  border-radius: 4px;
+}
+.choice.selected { border: 2px solid var(--accent); background: #eee0c8; }
+.choice:disabled { cursor: default; }
+.progress {
+  height: 5px;
+  background: var(--background);
+  margin: 12px 0 20px;
+}
+.progress div { height: 100%; width: 0; background: var(--accent); }
+footer { text-align: center; color: var(--muted); font-size: 11px; padding: 20px; }
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  background: #f8f0e1f5;
+  border-top: 1px solid var(--line);
+  padding: 7px 3px;
+  backdrop-filter: blur(10px);
+}
+nav button {
+  flex: 1;
+  max-width: 170px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 2px;
+  font-size: 11px;
+}
+nav button span { display: block; font-size: 19px; margin-bottom: 3px; }
+nav button.active { color: var(--brown); font-weight: bold; }
+@media (min-width: 600px) {
+  .games-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .paper { padding: 28px; }
+  .cover-inner { padding: 45px 30px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">ARSIP MERDEKA
+      <small>HISTORY · FIELD NOTES</small>
+    </div>
+    <div class="stamp">DOKUMEN 1945</div>
+  </div>
+</header>
+
+<main>
+  <!-- HALAMAN 1: SAMPUL -->
+  <section class="page active" id="cover">
+    <div class="paper cover">
+      <div class="cover-inner">
+        <div class="eyebrow">Arsip sejarah Indonesia · 001</div>
+        <div style="font-size:58px;margin:25px 0">✉️ 🇮🇩</div>
+        <h1>JEJAK<br>KEMERDEKAAN</h1>
+        <p class="muted"><i>Menelusuri peristiwa, membaca bukti, merangkai sejarah.</i></p>
+        <hr class="rule">
+        <label for="groupName">Nama kelompok</label>
+        <input id="groupName" placeholder="Contoh: Kelompok 1">
+        <label for="memberNames">Nama anggota kelompok</label>
+        <input id="memberNames" placeholder="Pisahkan dengan koma">
+        <button class="btn full" onclick="startSite()">Buka Arsip →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HALAMAN 2: BERANDA -->
+  <section class="page" id="home">
+    <div class="paper">
+      <div class="eyebrow">Selamat datang, peneliti</div>
+      <h2>Pilih perjalananmu.</h2>
+      <p class="muted">Buka materi sejarah, ikuti tiga permainan investigasi, lalu uji pemahamanmu.</p>
+      <hr class="rule">
+      <div class="grid">
+        <button class="card" onclick="showPage('materials')">
+          <div class="icon">📚</div>
+          <div class="number">01 · CATATAN</div>
+          <h3>Materi Sejarah</h3>
+          <p class="muted">Empat berkas pembelajaran.</p>
+        </button>
+        <button class="card" onclick="showPage('games')">
+          <div class="icon">🔎</div>
+          <div class="number">02 · INVESTIGASI</div>
+          <h3>Ruang Games</h3>
+          <p class="muted">Tiga jenis permainan.</p>
+        </button>
+        <button class="card" onclick="showPage('guide')">
+          <div class="icon">🧭</div>
+          <div class="number">03 · PANDUAN</div>
+          <h3>Pengarah Game</h3>
+          <p class="muted">Kelola kasus dan peserta.</p>
+        </button>
+        <button class="card" onclick="startQuiz()">
+          <div class="icon">📝</div>
+          <div class="number">04 · EVALUASI</div>
+          <h3>Uji Pemahaman</h3>
+          <p class="muted">Sepuluh pertanyaan.</p>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HALAMAN MATERI -->
+  <section class="page" id="materials">
+    <div class="paper">
+      <div class="eyebrow">Koleksi dokumen · 4 berkas</div>
+      <h2>Materi Sejarah</h2>
+      <p class="muted">Pilih bab untuk membaca ringkasan peristiwa.</p>
+      <div id="materialList" class="grid"></div>
+      <button class="btn secondary full" onclick="showPage('home')">← Beranda</button>
+    </div>
+  </section>
+
+  <section class="page" id="reading">
+    <div class="paper">
+      <div class="eyebrow" id="readEyebrow"></div>
+      <h2 id="readTitle"></h2>
+      <p id="readText"></p>
+      <div class="notice" id="readNote"></div>
+      <button class="btn full" onclick="showPage('materials')">← Daftar Materi</button>
+    </div>
+  </section>
+
+  <!-- HALAMAN 3: TIGA GAMES -->
+  <section class="page" id="games">
+    <div class="paper">
+      <div class="eyebrow">Ruang investigasi</div>
+      <h2>Pilih permainan.</h2>
+      <p class="muted">Setiap game punya mekanik berbeda dan empat pilihan kasus yang sama.</p>
+      <div class="grid games-grid" id="gamesList"></div>
+      <div class="notice" style="margin-top:18px">
+        <b>Aturan pemilihan:</b> satu kelompok mengambil satu kasus dalam sesi yang berlaku. Kasus yang telah digunakan tidak bisa diambil ulang selama sesi tersebut.
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAIL GAME -->
+  <section class="page" id="gameDetail">
+    <div class="paper">
+      <div class="eyebrow" id="gameEyebrow"></div>
+      <h2 id="gameTitle"></h2>
+      <p id="gameDescription"></p>
+      <hr class="rule">
+      <h3>Empat pilihan kasus</h3>
+      <p class="muted">Kasus yang sudah ditetapkan pengarah game akan ditandai.</p>
+      <div id="caseList" class="grid"></div>
+      <button class="btn secondary full" onclick="showPage('games')">← Semua Permainan</button>
+    </div>
+  </section>
+
+  <!-- HALAMAN KASUS -->
+  <section class="page" id="caseDetail">
+    <div class="paper">
+      <div class="eyebrow" id="caseEyebrow"></div>
+      <h2 id="caseTitle"></h2>
+      <p id="caseIntro"></p>
+      <hr class="rule">
+      <h3>Cara bermain</h3>
+      <div id="caseSteps"></div>
+      <div id="gameActivity"></div>
+      <button class="btn secondary full" onclick="showPage('gameDetail')">← Kembali ke Kasus</button>
+    </div>
+  </section>
+
+  <!-- PENGARAH GAME -->
+  <section class="page" id="guide">
+    <div class="paper">
+      <div class="eyebrow">Mode pengelola</div>
+      <h2>Meja Pengarah Game</h2>
+      <p class="muted">Gunakan halaman ini untuk menetapkan kasus bagi kelompok yang sedang bermain.</p>
+      <div class="notice">
+        Pengarah game menjelaskan aturan, menetapkan kasus, memandu jalannya permainan, dan memastikan kelompok mengikuti giliran.
+      </div>
+      <label for="guideGame">Pilih permainan</label>
+      <select id="guideGame" onchange="renderGuideCases()"></select>
+      <label for="guideGroup">Kelompok yang bermain</label>
+      <input id="guideGroup" placeholder="Contoh: Kelompok 2">
+      <label for="guideCase">Tetapkan kasus</label>
+      <select id="guideCase"></select>
+      <button class="btn full" onclick="assignCase()">Tetapkan Kasus untuk Kelompok</button>
+      <hr class="rule">
+      <h3>Daftar penetapan kasus</h3>
+      <div id="assignmentList"></div>
+      <button class="btn secondary full" onclick="resetAssignments()">Reset seluruh penetapan</button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="page" id="quiz">
+    <div class="paper">
+      <div class="eyebrow">Evaluasi pembelajaran</div>
+      <h2 id="quizTitle">Uji Pemahaman</h2>
+      <div class="progress"><div id="quizProgress"></div></div>
+      <div id="quizContent"></div>
+    </div>
+  </section>
+
+  <!-- TENTANG -->
+  <section class="page" id="about">
+    <div class="paper">
+      <div class="eyebrow">Tentang arsip</div>
+      <h2>Jejak Kemerdekaan</h2>
+      <p>Website pembelajaran sejarah interaktif yang mengajak siswa memahami perjalanan Indonesia setelah Proklamasi 17 Agustus 1945 melalui bacaan, permainan, dan evaluasi.</p>
+      <hr class="rule">
+      <h3>Alur website</h3>
+      <p>01 — Sampul dan identitas kelompok</p>
+      <p>02 — Empat materi sejarah</p>
+      <p>03 — Tiga game dengan empat kasus</p>
+      <p>04 — Pengarah game dan pembagian kasus</p>
+      <p>05 — Evaluasi pembelajaran</p>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <button class="active" data-nav="home" onclick="showPage('home')"><span>⌂</span>Beranda</button>
+  <button data-nav="materials" onclick="showPage('materials')"><span>▤</span>Materi</button>
+  <button data-nav="games" onclick="showPage('games')"><span>✧</span>Games</button>
+  <button data-nav="guide" onclick="showPage('guide')"><span>♙</span>Pengarah</button>
+  <button data-nav="about" onclick="showPage('about')"><span>ⓘ</span>Tentang</button>
+</nav>
+
+<footer>ARSIP MERDEKA · JEJAK KEMERDEKAAN · 1945</footer>
+
+<script>
+const topics = [
+  {
+    title: "Penyebaran Berita Proklamasi",
+    intro: "Bagaimana kabar kemerdekaan menyebar ke berbagai wilayah Indonesia.",
+    text: "Berita Proklamasi disebarkan melalui radio, kantor berita, surat kabar, pamflet, dan jaringan pemuda. Penyebaran informasi menghadapi keterbatasan komunikasi dan pengawasan Jepang sehingga berita kemerdekaan diteruskan dari satu wilayah ke wilayah lainnya.",
+    note: "Fokus: sarana komunikasi, peran tokoh, dan tantangan penyebaran berita."
+  },
+  {
+    title: "Reaksi dan Dukungan Rakyat",
+    intro: "Respons masyarakat setelah mengetahui Indonesia telah merdeka.",
+    text: "Proklamasi disambut dengan antusiasme dan dukungan rakyat. Berbagai kelompok masyarakat menyatakan dukungan melalui pertemuan, pengibaran Merah Putih, penyebaran berita, dan keterlibatan dalam perjuangan membangun negara merdeka.",
+    note: "Fokus: respons masyarakat, bentuk dukungan, dan makna kemerdekaan."
+  },
+  {
+    title: "Pembentukan Pemerintahan dan Pengibaran Merah Putih",
+    intro: "Langkah awal membangun negara dan menegaskan kedaulatan.",
+    text: "Indonesia mulai membentuk perangkat pemerintahan untuk menjalankan negara yang baru merdeka. Di berbagai daerah, pengibaran Merah Putih dan pengambilalihan kantor penting menjadi bagian dari upaya menegaskan kedaulatan Indonesia.",
+    note: "Fokus: pembentukan lembaga negara dan simbol kedaulatan."
+  },
+  {
+    title: "Perjuangan Mempertahankan Kemerdekaan",
+    intro: "Upaya rakyat mempertahankan kemerdekaan setelah Proklamasi.",
+    text: "Proklamasi tidak langsung mengakhiri konflik. Rakyat dan para pejuang menghadapi upaya kembalinya kekuasaan kolonial melalui diplomasi, pengorganisasian kekuatan, serta perlawanan di berbagai daerah.",
+    note: "Fokus: strategi perjuangan, diplomasi, perlawanan, dan konsekuensi."
+  }
+];
+
+const games = [
+  {
+    title: "Mystery Envelope",
+    icon: "✉️",
+    description: "Investigasi bukti. Pemain memeriksa dokumen dan petunjuk untuk mengungkap inti kasus.",
+    steps: [
+      "Pengarah game menetapkan satu kasus yang belum digunakan.",
+      "Pemain membuka berkas dan membaca petunjuk yang tersedia.",
+      "Pemain membandingkan bukti dan menyusun kesimpulan.",
+      "Pemain menyampaikan kesimpulan beserta bukti pendukung."
+    ]
+  },
+  {
+    title: "History Detective",
+    icon: "🔎",
+    description: "Rangkai petunjuk. Pemain menghubungkan peristiwa, tokoh, dan bukti untuk membangun kronologi.",
+    steps: [
+      "Pengarah game menetapkan satu kasus yang belum digunakan.",
+      "Pemain mengumpulkan kartu berisi fakta, tokoh, dan kejadian.",
+      "Pemain memasangkan petunjuk yang berhubungan dan menyusun urutan.",
+      "Pemain menjelaskan hubungan sebab-akibat yang ditemukan."
+    ]
+  },
+  {
+    title: "The Turning Point",
+    icon: "🧭",
+    description: "Simulasi strategi. Pemain merancang tindakan dan mengevaluasi konsekuensi keputusan.",
+    steps: [
+      "Pengarah game menyampaikan situasi sejarah dan keterbatasannya.",
+      "Pemain memilih beberapa tindakan dan menyusun rencana.",
+      "Pemain menjalankan simulasi untuk melihat dampak dari rencana.",
+      "Pemain mengevaluasi konsekuensi berdasarkan konteks sejarah."
+    ]
+  }
+];
+
+// Setiap game memiliki empat kasus yang sama.
+// Penetapan kasus disimpan terpisah per game.
+let assignments = [];
+let selectedGame = 0;
+let selectedCase = 0;
+let quizIndex = 0;
+let quizAnswers = {};
+let quizLocked = false;
+
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.getElementById(id);
+  if (target) target.classList.add("active");
+
+  document.querySelectorAll("[data-nav]").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.nav === id);
+  });
+
+  if (id === "materials") renderMaterials();
+  if (id === "games") renderGames();
+  if (id === "guide") renderGuide();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function startSite() {
+  const name = document.getElementById("groupName").value.trim();
+  if (!name) {
+    document.getElementById("groupName").focus();
+    alert("Isi nama kelompok terlebih dahulu.");
+    return;
+  }
+  showPage("home");
+}
+
+function renderMaterials() {
+  document.getElementById("materialList").innerHTML = topics.map((t, i) => `
+    <button class="card" onclick="openMaterial(${i})">
+      <div class="number">BERKAS ${String(i+1).padStart(2,"0")}</div>
+      <h3>${t.title}</h3>
+      <p class="muted">${t.intro}</p>
+    </button>
+  `).join("");
+}
+
+function openMaterial(index) {
+  const t = topics[index];
+  document.getElementById("readEyebrow").textContent =
+    "BERKAS " + String(index+1).padStart(2,"0");
+  document.getElementById("readTitle").textContent = t.title;
+  document.getElementById("readText").textContent = t.text;
+  document.getElementById("readNote").textContent = t.note;
+  showPage("reading");
+}
+
+function renderGames() {
+  document.getElementById("gamesList").innerHTML = games.map((g, i) => `
+    <button class="card" onclick="openGame(${i})">
+      <div class="icon">${g.icon}</div>
+      <div class="number">PERMAINAN ${String(i+1).padStart(2,"0")}</div>
+      <h3>${g.title}</h3>
+      <p class="muted">${g.description}</p>
+      <span class="status">4 PILIHAN KASUS →</span>
+    </button>
+  `).join("");
+}
+
+function openGame(index) {
+  selectedGame = index;
+  const g = games[index];
+  document.getElementById("gameEyebrow").textContent =
+    "PERMAINAN " + String(index+1).padStart(2,"0");
+  document.getElementById("gameTitle").textContent = g.title;
+  document.getElementById("gameDescription").textContent = g.description;
+  renderCases();
+  showPage("gameDetail");
+}
+
+function renderCases() {
+  const list = document.getElementById("caseList");
+  list.innerHTML = topics.map((t, i) => {
+    const used = assignments.some(a =>
+      a.game === selectedGame && a.caseIndex === i
+    );
+    return `
+      <button class="card case-card ${used ? "used" : ""}"
+        ${used ? "disabled" : ""}
+        onclick="openCase(${i})">
+        <div class="number">KASUS ${String.fromCharCode(65+i)}</div>
+        <h3>${t.title}</h3>
+        <p class="muted">${t.intro}</p>
+        <span class="status">${used ? "SUDAH DIAMBIL" : "PILIH KASUS →"}</span>
+      </button>
+    `;
+  }).join("");
+}
+
+function openCase(index) {
+  const used = assignments.some(a =>
+    a.game === selectedGame && a.caseIndex === index
+  );
+  if (used) {
+    alert("Kasus ini sudah ditetapkan untuk kelompok lain.");
+    return;
+  }
+
+  selectedCase = index;
+  const t = topics[index];
+  const g = games[selectedGame];
+
+  document.getElementById("caseEyebrow").textContent =
+    g.title + " · KASUS " + String.fromCharCode(65+index);
+  document.getElementById("caseTitle").textContent = t.title;
+  document.getElementById("caseIntro").textContent = t.intro;
+
+  document.getElementById("caseSteps").innerHTML = g.steps.map((step, i) => `
+    <div class="step">
+      <div class="step-num">${i+1}</div>
+      <div>${step}</div>
+    </div>
+  `).join("");
+
+  renderActivity();
+  showPage("caseDetail");
+}
+
+function renderActivity() {
+  const area = document.getElementById("gameActivity");
+  const t = topics[selectedCase];
+
+  if (selectedGame === 0) {
+    area.innerHTML = `
+      <hr class="rule">
+      <h3>Berkas petunjuk</h3>
+      <p>${t.text}</p>
+      <div class="notice">Tugas: catat dua fakta penting dan jelaskan bukti yang mendukung kesimpulanmu.</div>
+      <label for="evidenceNotes">Catatan investigasi</label>
+      <input id
